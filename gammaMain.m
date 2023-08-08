@@ -20,6 +20,8 @@ T_limiti = 1./T_limit;
 pzero_h2o = exp(wt_e0 - T_limiti .* (wt_e1 + T_limiti .* (wt_e2 - T_limiti .* wt_e3)));
 aw = pH2O_Tbin ./ pzero_h2o;
 
+%aw2 = exp(-69.775.*x - 18253.7.*x.^2 + 31072.2.*X.^3 - 25668.8.*x.^4).*(1./T_limit - 26.9033/T_limit.^2);
+
 % h2so4 molality (mol/kg)
 awcon = awconstants(aw);
 
@@ -70,6 +72,7 @@ switch inputs.rcase
         wt_acidity = wt_withorg;
         wt_viscocity = wt_withorg;        
         x_h2so4   = wt ./ (wt + (wt_water .* 98./18) + (wt_org .* 98./116));
+        aw = exp((-69.775.*(x_h2so4+x_organic) - 18253.7.*(x_h2so4+x_organic).^2 + 31072.2.*(x_h2so4+x_organic).^3 - 25668.8.*(x_h2so4+x_organic).^4).*(1./T_limit - 26.9033./T_limit.^2));
         molar_h2so4 = den_h2so4.*wt./9.8; %mol/l
     case 'newwt'
         x_h2so4   = wt_withorg ./ (wt_withorg + (wt_water .* 98./18) + (wt_org .* 98./116));
@@ -94,6 +97,7 @@ switch inputs.rcase
         x_h2so4 = wt ./ (wt + (100 - wt) .* 98 ./ 18);
     otherwise
         x_h2so4 = wt ./ (wt + (100 - wt) .* 98 ./ 18); % mole fraction
+        aw2 = exp((-69.775.*x_h2so4 - 18253.7.*x_h2so4.^2 + 31072.2.*x_h2so4.^3 - 25668.8.*x_h2so4.^4).*(1./T_limit - 26.9033./T_limit.^2));
 end
 
 % Shi et al calculation of Henry's constant for HCl

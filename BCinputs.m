@@ -5,7 +5,7 @@ function inputs = BCinputs
 inputs.directory = 'input/'; %change input directory here if needed.
 %inputs.directory = '/Volumes/ExternalOne/work/data/Bushfire/CESM/finalensembles/SD/control/alldata/temp/';   
 
-inputs.rcase = 'oldwt'; 
+inputs.rcase = 'normal'; 
 % Below is a list of the different cases that are currently implemented
 %normal (Regular Shi et al calculation - no organics)
 %hexanoicNOWT (Nature paper Solubility run)
