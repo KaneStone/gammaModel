@@ -25,7 +25,7 @@ switch size
         set(fig,'color','white','position',[100 100 1800 1200],'Visible',on);    
     case 'medium23'
         fig = figure;
-        set(fig,'color','white','position',[100 100 1350 900],'Visible',on);    
+        set(fig,'color','white','position',[100 100 1350 500],'Visible',on);    
     case 'small12'
         fig = figure;
         set(fig,'color','white','position',[100 100 1350 500],'Visible',on);    
