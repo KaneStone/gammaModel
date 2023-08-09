@@ -67,12 +67,12 @@ wt_viscocity = wt;
 molar_h2so4 = den_h2so4.*wt./9.8; %mol/l
 
 switch inputs.rcase    
-    case 'oldwt'        
+    case 'dilutionNaturepaper'        
         wt = wt_withorg;
         wt_acidity = wt_withorg;
         wt_viscocity = wt_withorg;        
         x_h2so4   = wt ./ (wt + (wt_water .* 98./18) + (wt_org .* 98./116));
-        aw = exp((-69.775.*(x_h2so4+x_organic) - 18253.7.*(x_h2so4+x_organic).^2 + 31072.2.*(x_h2so4+x_organic).^3 - 25668.8.*(x_h2so4+x_organic).^4).*(1./T_limit - 26.9033./T_limit.^2));
+        %aw = exp((-69.775.*(x_h2so4+x_organic) - 18253.7.*(x_h2so4+x_organic).^2 + 31072.2.*(x_h2so4+x_organic).^3 - 25668.8.*(x_h2so4+x_organic).^4).*(1./T_limit - 26.9033./T_limit.^2));
         molar_h2so4 = den_h2so4.*wt./9.8; %mol/l
     case 'newwt'
         x_h2so4   = wt_withorg ./ (wt_withorg + (wt_water .* 98./18) + (wt_org .* 98./116));
@@ -91,6 +91,17 @@ switch inputs.rcase
         wt_viscocity = wt;
         wt_acidity = wt;
         x_h2so4 = wt ./ (wt + (100 - wt) .* 98 ./ 18);
+        %aw = exp((-69.775.*(x_h2so4+x_organic) - 18253.7.*(x_h2so4+x_organic).^2 + 31072.2.*(x_h2so4+x_organic).^3 - 25668.8.*(x_h2so4+x_organic).^4).*(1./T_limit - 26.9033./T_limit.^2));
+    case 'correctedKaWithNewwt'
+        wt_viscocity = wt;
+        wt_acidity = wt;
+        x_h2so4   = wt_withorg ./ (wt_withorg + (wt_water .* 98./18) + (wt_org .* 98./116));
+    case 'correctedKaDilution'
+        wt = wt_withorg;
+        wt_viscocity = wt_withorg;
+        wt_acidity = wt_withorg;
+        x_h2so4   = wt_withorg ./ (wt_withorg + (wt_water .* 98./18) + (wt_org .* 98./116));
+        molar_h2so4 = den_h2so4.*wt./9.8; %mol/l
     case 'correctedKaWithacidvis'
         wt_viscocity = wt_withorg;
         wt_acidity = wt_withorg;
@@ -138,11 +149,11 @@ switch inputs.rcase
         H_total = H_hcl_h2so4.*x_h2so4water + H_hcl_hex.*x_organic;
         M_total = M_hcl_h2so4.*x_h2so4water + M_hcl_hex.*x_organic;        
         HOBrterm1 = x_h2so4water;
-        HOBrterm2 = repmat(5e8.*(1-x_h2so4water),[1,length(T_limit)]);
+        HOBrterm2 = 5e8.*(1-x_h2so4water);
         HOClterm1 = x_h2so4water;
         HOClterm2 = 1e6*(1-x_h2so4water);                
         
-    case 'hexanoicNOWT'
+    case 'solubilityNaturepaper'
                 
         H_total = H_hcl_hex;
         M_total = M_hcl_hex;        
@@ -151,7 +162,7 @@ switch inputs.rcase
         HOClterm1 = 1;
         HOClterm2 = 0;                
                 
-    case 'oldwt'
+    case 'dilutionNaturepaper'
                 
         H_total = H_hcl_h2so4;
         M_total = M_hcl_h2so4;        
@@ -160,7 +171,7 @@ switch inputs.rcase
         HOClterm1 = 1;
         HOClterm2 = 0;                
         
-    case {'correctedKa','correctedKaWithacidvis'}
+    case {'correctedKa','correctedKaWithacidvis','correctedKaWithNewwt','correctedKaDilution'}
         
         % recalculating H based on ah 
         term1 = 60.51;
@@ -182,6 +193,7 @@ switch inputs.rcase
         HOBrterm2 = 0;
         HOClterm1 = 1;
         HOClterm2 = 0;        
+
     case {'newwt','newwtWithacidity','newwtWithviscosity','newwtWithacidvis'}
                 
         H_total = H_hcl_h2so4;
