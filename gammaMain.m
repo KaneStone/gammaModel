@@ -102,6 +102,14 @@ switch inputs.rcase
         wt_acidity = wt_withorg;
         x_h2so4   = wt_withorg ./ (wt_withorg + (wt_water .* 98./18) + (wt_org .* 98./116));
         molar_h2so4 = den_h2so4.*wt./9.8; %mol/l
+        aw = exp((-69.775.*(x_h2so4+x_organic) - 18253.7.*(x_h2so4+x_organic).^2 + 31072.2.*(x_h2so4+x_organic).^3 - 25668.8.*(x_h2so4+x_organic).^4).*(1./T_limit - 26.9033./T_limit.^2));
+    case 'correctedKaDilutionNoacidvis'
+        wt_viscocity = wt;
+        wt_acidity = wt;
+        wt = wt_withorg;        
+        x_h2so4   = wt_withorg ./ (wt_withorg + (wt_water .* 98./18) + (wt_org .* 98./116));
+        molar_h2so4 = den_h2so4.*wt./9.8; %mol/l
+        aw = exp((-69.775.*(x_h2so4+x_organic) - 18253.7.*(x_h2so4+x_organic).^2 + 31072.2.*(x_h2so4+x_organic).^3 - 25668.8.*(x_h2so4+x_organic).^4).*(1./T_limit - 26.9033./T_limit.^2));
     case 'correctedKaWithacidvis'
         wt_viscocity = wt_withorg;
         wt_acidity = wt_withorg;
@@ -137,7 +145,7 @@ M_total = M_hcl_h2so4;
 
 % updating H and M terms based on case
 switch inputs.rcase
-    case 'normal'
+    case {'normal','normalHOBrfix'}
         H_total = H_hcl_h2so4;
         M_total = M_hcl_h2so4;
         HOBrterm1 = 1;
@@ -171,7 +179,7 @@ switch inputs.rcase
         HOClterm1 = 1;
         HOClterm2 = 0;                
         
-    case {'correctedKa','correctedKaWithacidvis','correctedKaWithNewwt','correctedKaDilution'}
+    case {'correctedKa','correctedKaWithacidvis','correctedKaWithNewwt','correctedKaDilution','correctedKaDilutionNoacidvis'}
         
         % recalculating H based on ah 
         term1 = 60.51;

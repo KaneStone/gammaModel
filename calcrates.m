@@ -117,7 +117,14 @@ D_hobr          = 9.e-9;
 % !            with his data (Hanson, 108, D8, 4239, JGR, 2003).
 % !            k1=k2*Mhcl for gamma(HOBr)
 % !-----------------------------------------------------------------------
-k_wasch         = .125 .* exp( .542*wt - 6440*T_limiti + 10.3);
+
+switch inputs.rcase
+    case 'normalHOBrfix'
+        k_wasch         = 1.25e9.*ah.*9e-9;
+    otherwise
+        k_wasch         = .125 .* exp( .542*wt - 6440*T_limiti + 10.3);
+end
+    
   % This needs to be fixed
   % k walsch goes to zero as they assume H_hobr increases with increasing
   % acidity

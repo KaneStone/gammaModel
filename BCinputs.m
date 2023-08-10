@@ -5,7 +5,7 @@ function inputs = BCinputs
 inputs.directory = 'input/'; %change input directory here if needed.
 %inputs.directory = '/Volumes/ExternalOne/work/data/Bushfire/CESM/finalensembles/SD/control/alldata/temp/';   
 
-inputs.rcase = 'correctedKa'; 
+inputs.rcase = 'normalHOBrfix'; 
 % Below is a list of the different cases that are currently implemented
 %normal (Regular Shi et al calculation - no organics)
 %solubilityNaturepaper (Nature paper Solubility run)
@@ -19,6 +19,8 @@ inputs.rcase = 'correctedKa';
 %correctedKaWithacidvis (Same as corrected Ka, but wt change also effects acidity and viscosity)
 %correctedKaWithNewwt (dilution of aerosols affect HCl solubiltu in H2so4/water portion too
 %correctedKaDilution (dilution of aerosols affects everthing and linearized
+%correctedKaDilution_noacidvis (dilution of aerosols affects everthing and linearized
+%normalHOBrfix (allowing HOBr to increase at lower temperatures)
 %% inputs for model parameters
 inputs.preslev = 70; %hPa;
 inputs.timeperiod = 1:53; % weeks used because of old control run had output in weeks.
