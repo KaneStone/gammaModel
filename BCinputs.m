@@ -5,7 +5,7 @@ function inputs = BCinputs
 inputs.directory = 'input/'; %change input directory here if needed.
 %inputs.directory = '/Volumes/ExternalOne/work/data/Bushfire/CESM/finalensembles/SD/control/alldata/temp/';   
 
-inputs.rcase = 'normalHOBrfix'; 
+inputs.rcase = 'correctedKaWithNewwt'; 
 % Below is a list of the different cases that are currently implemented
 %normal (Regular Shi et al calculation - no organics)
 %solubilityNaturepaper (Nature paper Solubility run)
@@ -32,7 +32,7 @@ inputs.mma = 28.97; % g/mol
 
 %% inputs for gamma calculations
 inputs.rad_sulf = 1e-5; %cm radius of aerosols (1e-5 is used in Shi et al) % changing this will change the gammas!
-inputs.orgsulfratio = 5; % ratio of organics to sulfate in aerosols
+inputs.orgsulfratio = 1.5; % ratio of organics to sulfate in aerosols
 
 %% plotting inputs
 inputs.plotgamma = 1;

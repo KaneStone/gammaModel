@@ -59,6 +59,7 @@ x_organic = wt_org ./ (wt_org + (wt_water .* 116.16/18) + (wt_withorg .* 116.16/
 % mole fraction of h2so4/water in aerosol
 x_h2so4water = 1 - x_organic;
 
+%test = wt_withorg/(wt_water+wt_withorg).*100
 %% update values dependent on case
 
 % base values for acidity, viscosity, and molarity h2so4 (mol/l)
@@ -96,6 +97,7 @@ switch inputs.rcase
         wt_viscocity = wt;
         wt_acidity = wt;
         x_h2so4   = wt_withorg ./ (wt_withorg + (wt_water .* 98./18) + (wt_org .* 98./116));
+        aw = exp((-69.775.*(x_h2so4+x_organic) - 18253.7.*(x_h2so4+x_organic).^2 + 31072.2.*(x_h2so4+x_organic).^3 - 25668.8.*(x_h2so4+x_organic).^4).*(1./T_limit - 26.9033./T_limit.^2));
     case 'correctedKaDilution'
         wt = wt_withorg;
         wt_viscocity = wt_withorg;
