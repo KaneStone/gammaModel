@@ -215,9 +215,43 @@ switch inputs.rcase
 end
 
 %% calculate rates
-[ah,g,vis_h2so4] = calcrates(inputs,wt,M_total,H_total,SAD_Tbin,molar_h2so4,...
-    T_limit,T_limiti,aw,pHCl_Tbin,pCLONO2_Tbin,HOClterm1,...
-    HOClterm2,HOBrterm1,HOBrterm2,wt_acidity,wt_viscocity);
+if inputs.klinear
+    [~,g_org,~] = calcrates(inputs,wt,M_hcl_hex,H_hcl_hex,SAD_Tbin,molar_h2so4,...
+        T_limit,T_limiti,aw,pHCl_Tbin,pCLONO2_Tbin,HOClterm1,...
+        HOClterm2,HOBrterm1,HOBrterm2,wt_acidity,wt_viscocity);
+
+    [~,g_sulfate,~] = calcrates(inputs,wt,M_hcl_h2so4,H_hcl_h2so4,SAD_Tbin,molar_h2so4,...
+        T_limit,T_limiti,aw,pHCl_Tbin,pCLONO2_Tbin,HOClterm1,...
+        HOClterm2,HOBrterm1,HOBrterm2,wt_acidity,wt_viscocity);
+    
+%     [~,g_org,~] = calcrates(inputs,wt,M_hcl_hex.*x_organic,H_hcl_hex.*x_organic,SAD_Tbin,molar_h2so4,...
+%         T_limit,T_limiti,aw,pHCl_Tbin,pCLONO2_Tbin,HOClterm1,...
+%         HOClterm2,HOBrterm1,HOBrterm2,wt_acidity,wt_viscocity);
+% 
+%     [~,g_sulfate,~] = calcrates(inputs,wt,M_hcl_h2so4.*x_h2so4water,H_hcl_h2so4.*x_h2so4water,SAD_Tbin,molar_h2so4,...
+%         T_limit,T_limiti,aw,pHCl_Tbin,pCLONO2_Tbin,HOClterm1,...
+%         HOClterm2,HOBrterm1,HOBrterm2,wt_acidity,wt_viscocity);
+    
+    [~,gk,~] = calcrates(inputs,wt,M_total,H_total,SAD_Tbin,molar_h2so4,...
+        T_limit,T_limiti,aw,pHCl_Tbin,pCLONO2_Tbin,HOClterm1,...
+        HOClterm2,HOBrterm1,HOBrterm2,wt_acidity,wt_viscocity);
+    
+    fields = fieldnames(g_org);
+    for i = 1:length(fields)
+        g.(fields{i}) = g_org.(fields{i}).*x_organic + g_sulfate.(fields{i}).*x_h2so4water;    
+    end
+        
+        
+    plotklinear(inputs,g,gk,T_limit);
+    
+    return
+    
+else
+
+    [ah,g,vis_h2so4] = calcrates(inputs,wt,M_total,H_total,SAD_Tbin,molar_h2so4,...
+        T_limit,T_limiti,aw,pHCl_Tbin,pCLONO2_Tbin,HOClterm1,...
+        HOClterm2,HOBrterm1,HOBrterm2,wt_acidity,wt_viscocity);
+end
 
 %% plot gammas, acidity nd viscosity
 plotGAMMA(inputs,g,ah,vis_h2so4,T_limit)
