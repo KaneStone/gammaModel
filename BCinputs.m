@@ -5,7 +5,7 @@ function inputs = BCinputs
 inputs.directory = 'input/'; %change input directory here if needed.
 %inputs.directory = '/Volumes/ExternalOne/work/data/Bushfire/CESM/finalensembles/SD/control/alldata/temp/';   
 
-inputs.rcase = 'correctedKa'; 
+inputs.rcase = 'doubleLinearize'; 
 % Below is a list of the different cases that are currently implemented
 %normal (Regular Shi et al calculation - no organics)
 %solubilityNaturepaper (Nature paper Solubility run)
@@ -21,6 +21,7 @@ inputs.rcase = 'correctedKa';
 %correctedKaDilution (dilution of aerosols affects everthing and linearized
 %correctedKaDilution_noacidvis (dilution of aerosols affects everthing and linearized
 %normalHOBrfix (allowing HOBr to increase at lower temperatures)
+%doubleLinearize (double linearization of only sulfate and mixed particles)
 %% inputs for model parameters
 inputs.preslev = 70; %hPa;
 inputs.timeperiod = 1:53; % weeks used because of old control run had output in weeks.
@@ -31,9 +32,10 @@ inputs.avg = 6.023e23;
 inputs.mma = 28.97; % g/mol
 
 %% inputs for gamma calculations
-inputs.rad_sulf = 1e-5; %cm radius of aerosols (1e-5 is used in Shi et al) % changing this will change the gammas!
-inputs.orgsulfratio = 5; % ratio of organics to sulfate in aerosols
-inputs.klinear = 1; % if klinear, linearize the gammas instead of the H solubility
+inputs.rad_sulf = 4e-5; %cm radius of aerosols (1e-5 is used in Shi et al) % changing this will change the gammas!
+inputs.orgsulfratio = 1.5; % ratio of organics to sulfate in mixed aerosols
+inputs.aerpartition = .25; % fraction of aerosols that are mixed compared to pure sulfate.
+inputs.klinear = 0; % if klinear, linearize the gammas instead of the H solubility
 
 %% plotting inputs
 inputs.plotgamma = 1;

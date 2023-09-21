@@ -116,16 +116,38 @@ switch inputs.rcase
         wt_viscocity = wt_withorg;
         wt_acidity = wt_withorg;
         x_h2so4 = wt ./ (wt + (100 - wt) .* 98 ./ 18);
+    case 'doubleLinearize'
+        wt_viscocity = wt;
+        wt_acidity = wt;
+        x_h2so4_orig   = wt ./ (wt + (100 - wt) .* 98 ./ 18);
+        %wt = wt_withorg;        
+        x_h2so4   = wt_withorg ./ (wt_withorg + (wt_water .* 98./18) + (wt_org .* 98./116));
+        
+        %molar_h2so4 = den_h2so4.*wt_withorg./9.8; %mol/l
+        %x_h2so4 = wt ./ (wt + (100 - wt) .* 98 ./ 18);
     otherwise
         x_h2so4 = wt ./ (wt + (100 - wt) .* 98 ./ 18); % mole fraction
         aw2 = exp((-69.775.*x_h2so4 - 18253.7.*x_h2so4.^2 + 31072.2.*x_h2so4.^3 - 25668.8.*x_h2so4.^4).*(1./T_limit - 26.9033./T_limit.^2));
 end
 
 % Shi et al calculation of Henry's constant for HCl
-term1 = .094 - x_h2so4 .* (.61 - 1.2 * x_h2so4);
-term2 = (8515 - 10718 .* (x_h2so4.^.7)).*T_limiti;
-H_hcl_h2so4 = term1 .* exp( -8.68 + term2); %(mol / l / atm)
-M_hcl_h2so4 = H_hcl_h2so4.*pHCl_Tbin; %(mol/l/atm * atm) = mol/l
+switch inputs.rcase
+    case 'doubleLinearize'
+        term1 = .094 - x_h2so4 .* (.61 - 1.2 * x_h2so4);
+        term2 = (8515 - 10718 .* (x_h2so4.^.7)).*T_limiti;
+        H_hcl_h2so4 = term1 .* exp( -8.68 + term2); %(mol / l / atm)
+        M_hcl_h2so4 = H_hcl_h2so4.*pHCl_Tbin; %(mol/l/at
+
+        term1 = .094 - x_h2so4_orig .* (.61 - 1.2 * x_h2so4_orig);
+        term2 = (8515 - 10718 .* (x_h2so4_orig.^.7)).*T_limiti;
+        H_hcl_h2so4_orig = term1 .* exp( -8.68 + term2); %(mol / l / atm)
+        M_hcl_h2so4_orig = H_hcl_h2so4_orig.*pHCl_Tbin; %(mol/l/at
+    otherwise
+        term1 = .094 - x_h2so4 .* (.61 - 1.2 * x_h2so4);
+        term2 = (8515 - 10718 .* (x_h2so4.^.7)).*T_limiti;
+        H_hcl_h2so4 = term1 .* exp( -8.68 + term2); %(mol / l / atm)
+        M_hcl_h2so4 = H_hcl_h2so4.*pHCl_Tbin; %(mol/l/atm * atm) = mol/l
+end
 
 % calculating HCL Henry's coefficient in hexanoic acid
 
@@ -197,12 +219,35 @@ switch inputs.rcase
         H_hcl_hex = molarity.*(1+Ka./ah);
         M_hcl_hex = H_hcl_hex.*pHCl_Tbin; %(mol/l/atm * atm) = mol/l
         
-        H_total = H_hcl_h2so4.*x_h2so4water + H_hcl_hex.*x_organic;
-        M_total = M_hcl_h2so4.*x_h2so4water + M_hcl_hex.*x_organic;
+        H_total = H_hcl_h2so4.*x_h2so4water + H_hcl_hex.*x_organic;        
+        M_total = M_hcl_h2so4.*x_h2so4water + M_hcl_hex.*x_organic;        
         HOBrterm1 = 1;
         HOBrterm2 = 0;
         HOClterm1 = 1;
         HOClterm2 = 0;        
+
+    case 'doubleLinearize'
+        % recalculating H based on ah 
+        term1 = 60.51;
+        term2 = .095.*wt_withorg;
+        wrk   = wt_withorg.*wt_withorg;
+        term3 = .0077.*wrk;
+        term4 = 1.61e-5.*wt_withorg.*wrk;
+        term5 = (1.76 + 2.52e-4 .* wrk) .* sqrt(T_limit);
+        term6 = -805.89 + (253.05.*(wt_withorg.^.076));
+        term7 = sqrt(T_limit);
+        ah    = exp( term1 - term2 + term3 - term4 - term5 + term6./term7);
+
+        H_hcl_hex = molarity.*(1+Ka./ah);
+        M_hcl_hex = H_hcl_hex.*pHCl_Tbin; %(mol/l/atm * atm) = mol/l
+        
+        H_total = (H_hcl_h2so4.*x_h2so4water + H_hcl_hex.*x_organic).*inputs.aerpartition + H_hcl_h2so4_orig.*(1-inputs.aerpartition);        
+        M_total = (M_hcl_h2so4.*x_h2so4water + M_hcl_hex.*x_organic).*inputs.aerpartition + M_hcl_h2so4_orig.*(1-inputs.aerpartition);        
+        %M_total = M_hcl_h2so4.*x_h2so4water + M_hcl_hex.*x_organic;        
+        HOBrterm1 = 1;
+        HOBrterm2 = 0;
+        HOClterm1 = 1;
+        HOClterm2 = 0;  
 
     case {'newwt','newwtWithacidity','newwtWithviscosity','newwtWithacidvis'}
                 

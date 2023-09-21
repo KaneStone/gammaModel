@@ -9,11 +9,16 @@ if inputs.plotgamma
     plot(T_limit,g.prob_cnt_h2o,'LineWidth',inputs.linewidth); set(gca,'Yscale','log');
     plot(T_limit,g.gprob_hocl_hcl,'LineWidth',inputs.linewidth); set(gca,'Yscale','log');
     plot(T_limit,g.gprob_hobr_hcl,'LineWidth',inputs.linewidth); set(gca,'Yscale','log');
+    plot([200 200],[10e-9 2],'--','color','k')
+    g200 = g.prob_cnt_hcl(T_limit == 200);
+    plot([200 200],[10e-9 2],'--','color','k')
+    plot([180 240],[g200 g200],'--','color','k')
     lh = legend('clono2+hcl','clono2+h2o','hocl+hcl','hobr+hcl');        
     set(lh,'box','off','fontsize',20)
     
     addLabels(inputs.fontsize,['Gamma, case = ',inputs.rcase,', ',inputs.ratioext,', ',inputs.radext],'Temperature','Reaction probability');
     ylim([1e-8 1])
+    xlim([185 235])
 
     outdir = [inputs.outdir,'gamma/'];
     filename = ['Gamma_compare_',inputs.rcase,'_',inputs.ratioext,'_',inputs.radext];
